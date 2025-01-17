@@ -51,6 +51,16 @@ public class FloorBathroom {
 
     }
 
+    public void printStallAvailability(){
+
+        System.out.println("\nCurrent Stall Status:");
+        for (int i = 0; i < BATHROOM_STALLS; i++) {
+            System.out.println("Stall " + stallBooker[i+1] + " is " + (stallBooker[i] ? "available\n" : "unavailable\n"));
+        }
+        System.out.println("\n---------------------------");
+
+    }
+
     static class Person implements Runnable {
 
         private int EMPLOYEE_ID;
