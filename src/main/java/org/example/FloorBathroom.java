@@ -16,4 +16,9 @@ public class FloorBathroom {
 
 
     }
+
+    static class Person implements Runnable {
+        @Override
+        public void run() {}
+    }
 }
