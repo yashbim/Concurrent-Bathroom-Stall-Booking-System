@@ -5,116 +5,103 @@ package org.example;
 import java.util.concurrent.Semaphore;
 
 public class FloorBathroom {
-
-    final static int BATHROOM_STALLS = 6;
-    final static int NUM_EMPLOYEES = 6;
-    Semaphore bathroomStalls;
-    boolean [] stallBooker ;
-
+    Semaphore stalls;
+    boolean[] stallAvailability; //false means occupied
+    static int employee_count = 100;
+    static int stall_count = 6;
 
     public static void main(String[] args) {
-        System.out.println("Floor Bathroom Booking System");
-
         FloorBathroom bathroom = new FloorBathroom();
-        Thread[] people = new Thread[NUM_EMPLOYEES];
+        Thread[] people = new Thread[employee_count];
 
-        //starting threads
+        // Create and start threads
+        for (int i = 0; i < employee_count; i++) {
+            people[i] = new Thread(new Person(i + 1, bathroom));
+//            people[i] = new Thread(new Person(i + 1, bathroom));
 
-        for (int i = 0; i < NUM_EMPLOYEES; i++) {
-            people[i] = new Thread(new Person(i+1, bathroom));
-
-            try{
-                Thread.sleep(1000); //small delay
-            }catch(InterruptedException e){
+            // Add small delay between thread starts
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                System.out.println(e.getMessage());
             }
-
+            people[i].start();
         }
 
-        //Waiting for threads to complete
-
+        // Wait for all threads to complete
         for (Thread person : people) {
             try {
                 person.join();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                System.out.println(e.getMessage());
             }
         }
     }
 
     public FloorBathroom() {
-
-        bathroomStalls = new Semaphore(BATHROOM_STALLS,true);
-        stallBooker = new boolean[BATHROOM_STALLS];
-
+        stalls = new Semaphore(stall_count, true); // Fair semaphore
+        stallAvailability = new boolean[stall_count]; // false means available
     }
 
-    public void printStallAvailability(){
-
+    public void printStallStatus() {
         System.out.println("\nCurrent Stall Status:");
-        for (int i = 0; i < BATHROOM_STALLS; i++) {
-            System.out.println("Stall " + stallBooker[i+1] + " is " + (stallBooker[i] ? "available\n" : "unavailable\n"));
+        for (int i = 0; i < stall_count; i++) {
+            System.out.print("Stall " + (i + 1) + ": " +
+                    (stallAvailability[i] ? "Occupied" : "Available") + " | ");
         }
-        System.out.println("\n---------------------------");
-
+        System.out.println("\n");
     }
 
-    private synchronized int findEmptySlot(){
-        for (int i = 0; i < BATHROOM_STALLS; i++) {
-            if(!stallBooker[i]){
-                stallBooker[i] = true;
+    private synchronized int findAvailableSlot() {
+        for (int i = 0; i < stall_count; i++) {
+            if (!stallAvailability[i]) {
+                stallAvailability[i] = true;
                 return i;
             }
         }
         return -1;
     }
 
-    public void bookBathroom(int personId){
+    public void bookStall(int personId) {
+        try {
+            System.out.println("Person " + personId + " is waiting in line.");
+            stalls.acquire();
 
-        try{
-            System.out.println("Person " + personId + " is waiting for bathroom.");
-            bathroomStalls.acquire();
+            int assignedStall = findAvailableSlot();
+            System.out.println("Person " + personId + " is using stall " + (assignedStall + 1));
+            printStallStatus();
 
-            int available_stall = findEmptySlot();
-            System.out.println("Person " + personId + " is using stall " + available_stall);
-            printStallAvailability();
+            // Simulate bathroom use time as 3 seconds
+            Thread.sleep(3000);
 
-            Thread.sleep(3000); //simulates bathroom time
+            clearStall(assignedStall);
+            System.out.println("Person " + personId + " has left stall " + (assignedStall + 1));
+            printStallStatus();
 
-            clearBathroom(available_stall); //empties the bathroom
-
-            System.out.println("Person " + personId + " has emptied " + available_stall);
-            printStallAvailability();
-
-            bathroomStalls.release();
-
-        }catch (InterruptedException e){
+            stalls.release();
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
     }
 
-    public synchronized void clearBathroom(int stallId){
-
-        stallBooker[stallId] = false;
-
+    private synchronized void clearStall(int stallNumber) {
+        stallAvailability[stallNumber] = false;
     }
 
     static class Person implements Runnable {
-
-        private int EMPLOYEE_ID;
+        private int employee_id;
         private FloorBathroom bathroom;
 
-        public Person(int EMPLOYEE_ID, FloorBathroom bathroom) {
-            this.EMPLOYEE_ID = EMPLOYEE_ID;
+
+        public Person(int id, FloorBathroom bathroom ) {
+            this.employee_id = id;
             this.bathroom = bathroom;
         }
 
         @Override
         public void run() {
-            bathroom.bookBathroom(EMPLOYEE_ID);
+            bathroom.bookStall(employee_id);
         }
     }
+
 }
