@@ -7,15 +7,15 @@ import java.util.concurrent.Semaphore;
 public class FloorBathroom {
     Semaphore stalls;
     boolean[] stallAvailability; //false means occupied
-    static int employee_count = 100;
-    static int stall_count = 6;
+    static int NUM_EMPLOYEES = 100;
+    static int BATHROOM_STALLS = 6;
 
     public static void main(String[] args) {
         FloorBathroom bathroom = new FloorBathroom();
-        Thread[] people = new Thread[employee_count];
+        Thread[] people = new Thread[NUM_EMPLOYEES];
 
         // Create and start threads
-        for (int i = 0; i < employee_count; i++) {
+        for (int i = 0; i < NUM_EMPLOYEES; i++) {
             people[i] = new Thread(new Person(i + 1, bathroom));
 //            people[i] = new Thread(new Person(i + 1, bathroom));
 
@@ -39,13 +39,13 @@ public class FloorBathroom {
     }
 
     public FloorBathroom() {
-        stalls = new Semaphore(stall_count, true); // Fair semaphore
-        stallAvailability = new boolean[stall_count]; // false means available
+        stalls = new Semaphore(BATHROOM_STALLS, true); // Fair semaphore
+        stallAvailability = new boolean[BATHROOM_STALLS]; // false means available
     }
 
     public void printStallStatus() {
         System.out.println("\nCurrent Stall Status:");
-        for (int i = 0; i < stall_count; i++) {
+        for (int i = 0; i < BATHROOM_STALLS; i++) {
             System.out.print("Stall " + (i + 1) + ": " +
                     (stallAvailability[i] ? "Occupied" : "Available") + " | ");
         }
@@ -53,7 +53,7 @@ public class FloorBathroom {
     }
 
     private synchronized int findAvailableSlot() {
-        for (int i = 0; i < stall_count; i++) {
+        for (int i = 0; i < BATHROOM_STALLS; i++) {
             if (!stallAvailability[i]) {
                 stallAvailability[i] = true;
                 return i;
