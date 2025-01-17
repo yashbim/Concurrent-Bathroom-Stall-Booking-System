@@ -29,6 +29,17 @@ public class FloorBathroom {
             }
 
         }
+
+        //Waiting for threads to complete
+
+        for (Thread person : people) {
+            try {
+                person.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     static class Person implements Runnable {
