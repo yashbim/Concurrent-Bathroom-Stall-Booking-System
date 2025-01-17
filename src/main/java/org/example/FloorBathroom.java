@@ -13,8 +13,22 @@ public class FloorBathroom {
     public static void main(String[] args) {
         System.out.println("Floor Bathroom Booking System");
 
+        FloorBathroom bathroom = new FloorBathroom();
+        Thread[] people = new Thread[NUM_EMPLOYEES];
 
+        //starting threads
 
+        for (int i = 0; i < NUM_EMPLOYEES; i++) {
+            people[i] = new Thread(new Person(i+1, bathroom));
+
+            try{
+                Thread.sleep(1000); //will simulate time taken in the stall
+            }catch(InterruptedException e){
+                Thread.currentThread().interrupt();
+                System.out.println(e.getMessage());
+            }
+
+        }
     }
 
     static class Person implements Runnable {
