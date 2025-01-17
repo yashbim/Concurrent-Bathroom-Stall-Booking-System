@@ -61,6 +61,16 @@ public class FloorBathroom {
 
     }
 
+    private synchronized int findEmptySlot(){
+        for (int i = 0; i < BATHROOM_STALLS; i++) {
+            if(!stallBooker[i]){
+                stallBooker[i] = true;
+                return i;
+            }
+        }
+        return -1;
+    }
+
     static class Person implements Runnable {
 
         private int EMPLOYEE_ID;
