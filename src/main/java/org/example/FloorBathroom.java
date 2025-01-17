@@ -24,7 +24,7 @@ public class FloorBathroom {
             people[i] = new Thread(new Person(i+1, bathroom));
 
             try{
-                Thread.sleep(1000); //will simulate time taken in the stall
+                Thread.sleep(1000); //small delay
             }catch(InterruptedException e){
                 Thread.currentThread().interrupt();
                 System.out.println(e.getMessage());
@@ -69,6 +69,35 @@ public class FloorBathroom {
             }
         }
         return -1;
+    }
+
+    public void bookBathroom(int personId){
+
+        try{
+            System.out.println("Person " + personId + " is waiting for bathroom.");
+            bathroomStalls.acquire();
+
+            int available_stall = findEmptySlot();
+            System.out.println("Person " + personId + " is using stall " + available_stall);
+            printStallAvailability();
+
+            Thread.sleep(3000); //simulates bathroom time
+
+            clearBathroom(available_stall); //empties the bathroom
+
+            System.out.println("Person " + personId + " has emptied " + available_stall);
+            printStallAvailability();
+
+            bathroomStalls.release();
+
+        }catch (InterruptedException e){}
+
+    }
+
+    public synchronized void clearBathroom(int stallId){
+
+        stallBooker[stallId] = false;
+
     }
 
     static class Person implements Runnable {
