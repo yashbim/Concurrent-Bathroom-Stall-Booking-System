@@ -18,6 +18,15 @@ public class FloorBathroom {
     }
 
     static class Person implements Runnable {
+
+        private int EMPLOYEE_ID;
+        private FloorBathroom bathroom;
+
+        public Person(int EMPLOYEE_ID, FloorBathroom bathroom) {
+            this.EMPLOYEE_ID = EMPLOYEE_ID;
+            this.bathroom = bathroom;
+        }
+
         @Override
         public void run() {}
     }
