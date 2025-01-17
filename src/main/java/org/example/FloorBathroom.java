@@ -90,7 +90,9 @@ public class FloorBathroom {
 
             bathroomStalls.release();
 
-        }catch (InterruptedException e){}
+        }catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
 
     }
 
@@ -111,6 +113,8 @@ public class FloorBathroom {
         }
 
         @Override
-        public void run() {}
+        public void run() {
+            bathroom.bookBathroom(EMPLOYEE_ID);
+        }
     }
 }
