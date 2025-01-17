@@ -8,7 +8,7 @@ public class FloorBathroom {
 
     final static int BATHROOM_STALLS = 6;
     final static int NUM_EMPLOYEES = 6;
-    Semaphore bathroomStalls = new Semaphore(6);
+    Semaphore bathroomStalls;
     boolean [] stallBooker ;
 
 
@@ -42,6 +42,13 @@ public class FloorBathroom {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    public FloorBathroom() {
+
+        bathroomStalls = new Semaphore(BATHROOM_STALLS,true);
+        stallBooker = new boolean[BATHROOM_STALLS];
+
     }
 
     static class Person implements Runnable {
