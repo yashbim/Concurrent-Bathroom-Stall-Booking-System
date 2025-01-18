@@ -47,7 +47,7 @@ public class FloorBathroom {
         System.out.println("\nCurrent Stall Status:");
         for (int i = 0; i < BATHROOM_STALLS; i++) {
             System.out.print("Stall " + (i + 1) + ": " +
-                    (stallAvailability[i] ? "Occupied" : "Available") + " | ");
+                    (stallAvailability[i] ? "Occupied" : "Available") + " \n ");
         }
         System.out.println("\n");
     }
