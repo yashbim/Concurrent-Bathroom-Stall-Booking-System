@@ -1,4 +1,4 @@
-// FInd source code at https://github.com/yashbim/Concurrent-Bathroom-Stall-Booking-System
+// Find source code at https://github.com/yashbim/Concurrent-Bathroom-Stall-Booking-System
 
 package org.example;
 
@@ -17,7 +17,6 @@ public class FloorBathroom {
         // Create and start threads
         for (int i = 0; i < NUM_EMPLOYEES; i++) {
             people[i] = new Thread(new Person(i + 1, bathroom));
-//            people[i] = new Thread(new Person(i + 1, bathroom));
 
             // Add small delay between thread starts
             try {
@@ -80,6 +79,7 @@ public class FloorBathroom {
 
             stalls.release();
         } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
             Thread.currentThread().interrupt();
         }
     }
